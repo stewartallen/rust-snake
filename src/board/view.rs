@@ -1,7 +1,9 @@
-use super::controller::GameBoardController;
 use graphics::character::CharacterCache;
+use graphics::math::Matrix2d;
 use graphics::types::{Color, FontSize};
 use graphics::{Context, Graphics, Rectangle, Text, Transformed};
+
+use super::controller::GameBoardController;
 
 pub struct GameBoardViewSettings {
     position: [f64; 2],
@@ -9,6 +11,7 @@ pub struct GameBoardViewSettings {
     background_color: Color,
     board_edge_color: Color,
 
+    score_position: [f64; 2],
     score_color: Color,
     score_font_size: FontSize,
 
@@ -19,11 +22,15 @@ pub struct GameBoardViewSettings {
 impl GameBoardViewSettings {
     pub fn new() -> GameBoardViewSettings {
         GameBoardViewSettings {
-            position: [10.0; 2],
+            position: [10.0, 30.0],
+
             background_color: [0.3, 0.9, 0.5, 1.0],
             board_edge_color: [0.0, 0.0, 0.2, 1.0],
+
+            score_position: [80.0, 20.0],
             score_color: [0.0, 0.0, 0.0, 1.0],
             score_font_size: 18,
+
             treat_size: [10.0, 10.0],
             treat_color: [1.0, 0.0, 0.0, 1.0],
         }
@@ -39,6 +46,11 @@ impl GameBoardView {
         GameBoardView { settings }
     }
 
+    pub fn board_transform(&self, context: &Context) -> Matrix2d {
+        let ref settings = self.settings;
+        context.transform.trans(settings.position[0], settings.position[1])
+    }
+
     pub fn draw<C, G>(&self, controller: &GameBoardController, glyphs: &mut C, context: &Context, graphics: &mut G)
     where
         C: CharacterCache,
@@ -48,15 +60,18 @@ impl GameBoardView {
         let ref settings = self.settings;
         let ref board_size = controller.game_board.size;
 
-        let board_rect = [settings.position[0], settings.position[1], board_size[0], board_size[1]];
+        let board_trans = self.board_transform(context);
+        let board_rect = [0.0, 0.0, board_size[0], board_size[1]];
 
         // Draw board background.
-        Rectangle::new(settings.background_color).draw(board_rect, &context.draw_state, context.transform, graphics);
+        Rectangle::new(settings.background_color).draw(board_rect, &context.draw_state, board_trans, graphics);
 
         let score = format!("score: {}", controller.score());
-        let transform = context.transform.trans(board_size[0] - 80.0, 30.0);
+        let score_trans = context
+            .transform
+            .trans(board_size[0] - settings.score_position[0], settings.score_position[1]);
         Text::new_color(settings.score_color, settings.score_font_size)
-            .draw(score.as_str(), glyphs, &context.draw_state, transform, graphics)
+            .draw(score.as_str(), glyphs, &context.draw_state, score_trans, graphics)
             .expect("Could not draw text");
 
         for treat in &controller.game_board.treats {
@@ -73,7 +88,7 @@ impl GameBoardView {
         Rectangle::new_border(settings.board_edge_color, 1.0).draw(
             board_rect,
             &context.draw_state,
-            context.transform,
+            board_trans,
             graphics,
         );
     }

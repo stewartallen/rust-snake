@@ -70,9 +70,27 @@ impl SnakeController {
         }
     }
 
-    pub fn update(&mut self, _args: UpdateArgs) {
+    fn check_bounds(&self) -> bool {
+        let ref snake = self.snake;
+        let x = snake.pos[0];
+        let y = snake.pos[1];
+        let x1 = x + snake.size[0];
+        let y1 = y + snake.size[1];
+        let extents_x = snake.board_extents[0];
+        let extents_y = snake.board_extents[1];
+
+        x > 0.0 && y > 0.0 && x1 < extents_x && y1 < extents_y
+    }
+
+    pub fn update(&mut self, _args: UpdateArgs) -> bool {
+        if !self.check_bounds() {
+            return false;
+        }
+
         let direction = DIRECTIONS.get(&self.direction).unwrap();
         self.snake.pos[0] += (direction[0] as f64) * self.snake.speed;
         self.snake.pos[1] += (direction[1] as f64) * self.snake.speed;
+
+        true
     }
 }

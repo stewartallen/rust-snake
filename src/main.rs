@@ -14,11 +14,10 @@ mod board;
 mod snake;
 mod util;
 
-pub static WINDOW_SIZE: [f64; 2] = [800.0, 600.0];
 pub static SNAKE_SPEED: f64 = 1.0;
 
 fn main() {
-    let mut window: PistonWindow = WindowSettings::new("Rust Snake", WINDOW_SIZE)
+    let mut window: PistonWindow = WindowSettings::new("Rust Snake", [820.0, 640.0])
         .exit_on_esc(true)
         .resizable(false)
         .build()
@@ -26,7 +25,7 @@ fn main() {
 
     let mut game_over = false;
 
-    let board = GameBoardModel::new(WINDOW_SIZE);
+    let board = GameBoardModel::new([800.0, 600.0]);
     let board_controller_settings = GameBoardControllerSettings::new();
     let mut board_controller = GameBoardController::new(board_controller_settings, board);
     let board_view_settings = GameBoardViewSettings::new();
@@ -48,14 +47,15 @@ fn main() {
         window.draw_2d(&event, |context, graphics| {
             clear([1.0; 4], graphics);
 
+            let board_transform = board_view.board_transform(&context);
             board_view.draw(&board_controller, &mut glyphs, &context, graphics);
-            snake_view.draw(&snake_controller, &context, graphics);
+            snake_view.draw(&snake_controller, board_transform, &context, graphics);
         });
 
         if !game_over {
             if let Some(update) = event.update_args() {
-                game_over = !board_controller.update(update, &snake_controller);
-                snake_controller.update(update);
+                board_controller.update(update);
+                game_over = !snake_controller.update(update);
             }
         }
     }

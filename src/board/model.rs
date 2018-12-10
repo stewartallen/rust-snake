@@ -11,11 +11,11 @@ pub struct GameBoardModel {
 }
 
 impl GameBoardModel {
-    pub fn new(window_size: [f64; 2]) -> GameBoardModel {
+    pub fn new(size: [f64; 2]) -> GameBoardModel {
         GameBoardModel {
-            size: [window_size[0] - 20.0, window_size[1] - 20.0],
+            size,
             // Create with at least one treat
-            treats: vec![Treat::new(window_size)],
+            treats: vec![Treat::new(size)],
             score: 0,
         }
     }

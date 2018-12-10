@@ -1,4 +1,5 @@
 use super::controller::SnakeController;
+use graphics::math::Matrix2d;
 use graphics::types::Color;
 use graphics::{Context, Graphics, Rectangle, Transformed};
 
@@ -23,11 +24,22 @@ impl SnakeView {
         SnakeView { settings }
     }
 
-    pub fn draw<G: Graphics>(&self, controller: &SnakeController, context: &Context, graphics: &mut G) {
+    pub fn draw<G: Graphics>(
+        &self,
+        controller: &SnakeController,
+        transform: Matrix2d,
+        context: &Context,
+        graphics: &mut G,
+    ) {
         let ref settings = self.settings;
         let ref pos = controller.snake.pos;
+        let snake_trans = transform.trans(pos[0], pos[1]);
 
-        let transform = context.transform.trans(pos[0], pos[1]);
-        Rectangle::new(settings.color).draw([0.0, 0.0, 10.0, 10.0], &context.draw_state, transform, graphics);
+        Rectangle::new(settings.color).draw(
+            [0.0, 0.0, controller.snake.size[0], controller.snake.size[1]],
+            &context.draw_state,
+            snake_trans,
+            graphics,
+        );
     }
 }
