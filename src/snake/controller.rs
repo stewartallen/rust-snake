@@ -4,6 +4,7 @@ use piston::input::{Button, Key, UpdateArgs};
 use std::collections::HashMap;
 
 use super::model::SnakeModel;
+use crate::util;
 
 #[derive(PartialEq, Eq, Hash)]
 enum Direction {
@@ -70,27 +71,25 @@ impl SnakeController {
         }
     }
 
-    fn check_bounds(&self) -> bool {
+    fn in_bounds(&self) -> bool {
         let ref snake = self.snake;
-        let x = snake.pos[0];
-        let y = snake.pos[1];
-        let x1 = x + snake.size[0];
-        let y1 = y + snake.size[1];
-        let extents_x = snake.board_extents[0];
-        let extents_y = snake.board_extents[1];
+        let board_extents = [
+            snake.board_extents[0] - snake.size[0] * 2.0,
+            snake.board_extents[1] - snake.size[1] * 2.0,
+        ];
 
-        x > 0.0 && y > 0.0 && x1 < extents_x && y1 < extents_y
+        /* Check that the snake is in bounds, ie is colliding with the board */
+        util::collision(
+            [[snake.pos[0], snake.pos[1]], [snake.size[0], snake.size[1]]],
+            [[snake.size[0], snake.size[1]], board_extents],
+        )
     }
 
     pub fn update(&mut self, _args: UpdateArgs) -> bool {
-        if !self.check_bounds() {
-            return false;
-        }
-
         let direction = DIRECTIONS.get(&self.direction).unwrap();
         self.snake.pos[0] += (direction[0] as f64) * self.snake.speed;
         self.snake.pos[1] += (direction[1] as f64) * self.snake.speed;
 
-        true
+        self.in_bounds()
     }
 }
