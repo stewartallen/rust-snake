@@ -5,6 +5,7 @@ authors = ["Stewart Allen <allenstew@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+lazy_static = "1.2.0"
 piston = "0.39.0"
 piston2d-graphics = "0.28.0"
 piston_window = "0.85.0"

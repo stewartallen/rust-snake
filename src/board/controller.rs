@@ -17,7 +17,7 @@ impl GameBoardControllerSettings {
     pub fn new() -> GameBoardControllerSettings {
         GameBoardControllerSettings {
             max_treats: 10,
-            treat_rate: 0.005,
+            treat_rate: 0.002,
         }
     }
 }

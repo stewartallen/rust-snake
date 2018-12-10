@@ -15,7 +15,7 @@ mod snake;
 mod util;
 
 pub static WINDOW_SIZE: [f64; 2] = [800.0, 600.0];
-pub static SNAKE_SPEED: f64 = 0.5;
+pub static SNAKE_SPEED: f64 = 1.0;
 
 fn main() {
     let mut window: PistonWindow = WindowSettings::new("Rust Snake", WINDOW_SIZE)
