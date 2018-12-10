@@ -41,23 +41,28 @@ impl SnakeController {
         if let Some(Button::Keyboard(key)) = event.press_args() {
             match key {
                 Key::Up => {
-                    println!("UP");
-                    self.direction = Direction::NORTH;
+                    /* Make sure the snake can't turn on it's self. */
+                    if self.direction != Direction::SOUTH {
+                        self.direction = Direction::NORTH;
+                    }
                 }
 
                 Key::Down => {
-                    println!("DOWN");
-                    self.direction = Direction::SOUTH;
+                    if self.direction != Direction::NORTH {
+                        self.direction = Direction::SOUTH;
+                    }
                 }
 
                 Key::Left => {
-                    println!("LEFT");
-                    self.direction = Direction::WEST;
+                    if self.direction != Direction::EAST {
+                        self.direction = Direction::WEST;
+                    }
                 }
 
                 Key::Right => {
-                    println!("RIGHT");
-                    self.direction = Direction::EAST;
+                    if self.direction != Direction::WEST {
+                        self.direction = Direction::EAST;
+                    }
                 }
 
                 _ => {}
