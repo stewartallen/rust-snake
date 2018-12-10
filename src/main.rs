@@ -54,7 +54,7 @@ fn main() {
 
         if !game_over {
             if let Some(update) = event.update_args() {
-                board_controller.update(update);
+                board_controller.update(&snake_controller, update);
                 game_over = !snake_controller.update(update);
             }
         }

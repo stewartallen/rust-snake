@@ -2,6 +2,7 @@ use crate::util;
 
 pub struct Treat {
     pub pos: [f64; 2],
+    pub size: [f64; 2],
 }
 
 pub struct GameBoardModel {
@@ -25,6 +26,7 @@ impl Treat {
     pub fn new(extents: [f64; 2]) -> Treat {
         Treat {
             pos: util::random_start(extents, 50.0),
+            size: [10.0; 2],
         }
     }
 }

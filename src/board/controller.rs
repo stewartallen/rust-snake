@@ -1,4 +1,6 @@
 use super::model::{GameBoardModel, Treat};
+use crate::snake::controller::SnakeController;
+use crate::util;
 use piston::input::UpdateArgs;
 use rand::prelude::*;
 
@@ -31,7 +33,21 @@ impl GameBoardController {
         }
     }
 
-    pub fn update(&mut self, _args: UpdateArgs) {
+    pub fn update(&mut self, snake_controller: &SnakeController, _args: UpdateArgs) {
+        let snake_pos = snake_controller.snake.pos;
+        let snake_size = snake_controller.snake.size;
+        let mut score_inc = 0;
+
+        self.game_board.treats.retain(|treat| {
+            if util::collision([snake_pos, snake_size], [treat.pos, treat.size]) {
+                score_inc += 1;
+                return false;
+            }
+            true
+        });
+
+        self.game_board.score += score_inc;
+
         if self.game_board.treats.len() < self.settings.max_treats {
             if self.rng.gen_bool(self.settings.treat_rate) {
                 self.game_board.treats.push(Treat::new(self.game_board.size));

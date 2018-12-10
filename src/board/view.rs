@@ -75,7 +75,7 @@ impl GameBoardView {
             .expect("Could not draw text");
 
         for treat in &controller.game_board.treats {
-            let transform = context.transform.trans(treat.pos[0], treat.pos[1]);
+            let transform = board_trans.trans(treat.pos[0], treat.pos[1]);
             Rectangle::new(settings.treat_color).draw(
                 [0.0, 0.0, settings.treat_size[0], settings.treat_size[1]],
                 &context.draw_state,
