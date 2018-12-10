@@ -24,6 +24,8 @@ fn main() {
         .build()
         .unwrap();
 
+    let mut game_over = false;
+
     let board = GameBoardModel::new(WINDOW_SIZE);
     let board_controller_settings = GameBoardControllerSettings::new();
     let mut board_controller = GameBoardController::new(board_controller_settings, board);
@@ -50,9 +52,11 @@ fn main() {
             snake_view.draw(&snake_controller, &context, graphics);
         });
 
-        if let Some(update) = event.update_args() {
-            board_controller.update(update);
-            snake_controller.update(update);
+        if !game_over {
+            if let Some(update) = event.update_args() {
+                game_over = !board_controller.update(update, &snake_controller);
+                snake_controller.update(update);
+            }
         }
     }
 }
