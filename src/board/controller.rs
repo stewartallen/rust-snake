@@ -34,12 +34,11 @@ impl GameBoardController {
     }
 
     pub fn update(&mut self, snake_controller: &SnakeController, _args: UpdateArgs) {
-        let snake_pos = snake_controller.snake.pos;
-        let snake_size = snake_controller.snake.size;
+        let snake_shape = snake_controller.snake.shape;
         let mut score_inc = 0;
 
         self.game_board.treats.retain(|treat| {
-            if util::collision([snake_pos, snake_size], [treat.pos, treat.size]) {
+            if util::collision(snake_shape, treat.shape) {
                 score_inc += 1;
                 return false;
             }
@@ -50,7 +49,7 @@ impl GameBoardController {
 
         if self.game_board.treats.len() < self.settings.max_treats {
             if self.rng.gen_bool(self.settings.treat_rate) {
-                self.game_board.treats.push(Treat::new(self.game_board.size));
+                self.game_board.treats.push(Treat::new(self.game_board.board));
             }
         }
     }

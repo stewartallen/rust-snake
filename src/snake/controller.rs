@@ -1,3 +1,4 @@
+use graphics::types::Vec2d;
 use lazy_static::lazy_static;
 use piston::input::GenericEvent;
 use piston::input::{Button, Key, UpdateArgs};
@@ -15,7 +16,7 @@ enum Direction {
 }
 
 lazy_static! {
-    static ref DIRECTIONS: HashMap<Direction, [i8; 2]> = {
+    static ref DIRECTIONS: HashMap<Direction, Vec2d<i8>> = {
         let mut map = HashMap::new();
         map.insert(Direction::NORTH, [0, -1]);
         map.insert(Direction::SOUTH, [0, 1]);
@@ -73,22 +74,15 @@ impl SnakeController {
 
     fn in_bounds(&self) -> bool {
         let ref snake = self.snake;
-        let board_extents = [
-            snake.board_extents[0] - snake.size[0] * 2.0,
-            snake.board_extents[1] - snake.size[1] * 2.0,
-        ];
 
         /* Check that the snake is in bounds, ie is colliding with the board */
-        util::collision(
-            [[snake.pos[0], snake.pos[1]], [snake.size[0], snake.size[1]]],
-            [[snake.size[0], snake.size[1]], board_extents],
-        )
+        util::collision(snake.shape, snake.extents)
     }
 
     pub fn update(&mut self, _args: UpdateArgs) -> bool {
         let direction = DIRECTIONS.get(&self.direction).unwrap();
-        self.snake.pos[0] += (direction[0] as f64) * self.snake.speed;
-        self.snake.pos[1] += (direction[1] as f64) * self.snake.speed;
+        self.snake.shape[0] += (direction[0] as f64) * self.snake.speed;
+        self.snake.shape[1] += (direction[1] as f64) * self.snake.speed;
 
         self.in_bounds()
     }

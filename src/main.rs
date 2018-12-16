@@ -25,13 +25,13 @@ fn main() {
 
     let mut game_over = false;
 
-    let board = GameBoardModel::new([800.0, 600.0]);
+    let board = GameBoardModel::new([0.0, 0.0, 800.0, 600.0]);
     let board_controller_settings = GameBoardControllerSettings::new();
     let mut board_controller = GameBoardController::new(board_controller_settings, board);
     let board_view_settings = GameBoardViewSettings::new();
     let board_view = GameBoardView::new(board_view_settings);
 
-    let snake = SnakeModel::new(board_controller.game_board.size, SNAKE_SPEED);
+    let snake = SnakeModel::new(board_controller.game_board.board, SNAKE_SPEED);
     let mut snake_controller = SnakeController::new(snake);
     let snake_view_settings = SnakeViewSettings::new();
     let snake_view = SnakeView::new(snake_view_settings);
